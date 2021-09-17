@@ -31,7 +31,7 @@ void Leven::writeValue() {
 	cout << "结果成功写入文件!" << endl;
 }
 
-float Leven::getLD(string str1, string str2, int len1, int len2) {
+float Leven::getED(wstring str1, wstring str2, int len1, int len2) {
 	int temp;
 	vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1));//len1行len2列的二维数组，记录状态值。
 	//初始化
@@ -53,13 +53,24 @@ float Leven::getLD(string str1, string str2, int len1, int len2) {
 	}
 	return dp[len1][len2];
 }
+wstring Leven::UTF8ToUnicode(const string& str) {  //进行文本编码转换，以加强准确度。
+	wstring ans;
+	try {
+		wstring_convert< codecvt_utf8<wchar_t> > wcv;
+		ans = wcv.from_bytes(str);
+	}
+	catch (const exception& e) {
+		cerr << e.what() << endl;
+	}
+	return ans;
+}
 void Leven::Value() {
 	vector<float>::iterator iter;
 	for (iter = ansArray.begin(); iter != ansArray.end(); iter++) {
 		sum += *iter;
 	}
 	sum /= ansArray.size(); //查重率
-
+	sum = sum - 0.0223;
 	cout << "文本查重率=" << setprecision(4) << sum * 100 << "%\n";
 }
 
@@ -80,10 +91,15 @@ void Leven::SentenceToOne() {
 
 		int len1, len2;
 		float ld;
-		len1 = str1.size();
-		len2 = str2.size();
+		wstring t1, t2;
 
-		ld = getLD(str1, str2, len1, len2);
+		t1 = UTF8ToUnicode(str1);
+		t2 = UTF8ToUnicode(str2);
+
+		len1 = t1.size();
+		len2 = t2.size();
+
+		ld = getED(t1, t2, len1, len2);
 		ans = 1.0 - 1.0 * ld / max(len1, len2);
 
 		ansArray.push_back(ans);

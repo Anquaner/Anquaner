@@ -33,11 +33,10 @@ public:
 	Leven();
 	~Leven();
 	void Run();
-	float getLD(string str1, string str2, int len1, int len2);
+	float getED(wstring str1, wstring str2, int len1, int len2);
 	void Value();
 	void SentenceToOne();
 	void writeValue();
 	void init(int argc, char* argv[]);
-	
-	
+	wstring UTF8ToUnicode(const string& str);
 };
